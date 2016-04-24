@@ -11,22 +11,30 @@ namespace IdentityServer3.Example.Client.FormPost.Controllers
 {
     public sealed class AccountController : Controller
     {
-        private const string ClientUri = @"https://localhost:44304";
-        private const string CallbackEndpoint = ClientUri + @"/account/signInCallback";
-        private const string IdServBaseUri = @"https://localhost:44300/oauth/ls";
-        private const string AuthorizeUri = IdServBaseUri + @"/connect/authorize";
-        private const string LogoutUri = IdServBaseUri + @"/connect/endsession";
+        private static readonly Func<HttpRequestBase, string> CallbackEndpoint = req => ClientUri(req) + @"/account/signInCallback";
+
+        private static readonly Func<HttpRequestBase,string> ClientUri = req => req.UserHostName.Contains("azurewebsites.net") 
+            ? @"https://dev-oauth-client.azurewebsites.net/" 
+            : @"https://localhost:44304";
+
+        private static readonly Func<HttpRequestBase, string> IdServBaseUri = req => req.UserHostName.Contains("azurewebsites.net")
+            ? @"https://dev-oauth1.azurewebsites.net/oauth/ls"
+            : @"https://localhost:44300/oauth/ls";
+
+        private static readonly Func<HttpRequestBase, string> AuthorizeUri = req => IdServBaseUri(req) + @"/connect/authorize";
+
+        private static readonly Func<HttpRequestBase, string> LogoutUri = req => IdServBaseUri(req) + @"/connect/endsession";
 
         public ActionResult SignIn()
         {
             var state = Guid.NewGuid().ToString("N");
             var nonce = Guid.NewGuid().ToString("N");
 
-            var url = AuthorizeUri +
+            var url = AuthorizeUri(this.Request) +
                       "?client_id=implicitclient" +
                       "&response_type=id_token" +
                       "&scope=openid email profile" +
-                      "&redirect_uri=" + CallbackEndpoint +
+                      "&redirect_uri=" + CallbackEndpoint(this.Request) +
                       "&response_mode=form_post" +
                       "&state=" + state +
                       "&nonce=" + nonce;
@@ -83,7 +91,7 @@ namespace IdentityServer3.Example.Client.FormPost.Controllers
             var parameters = new TokenValidationParameters
             {
                 ValidAudience = "implicitclient",
-                ValidIssuer = IdServBaseUri,
+                ValidIssuer = IdServBaseUri(this.Request),
                 IssuerSigningToken = new X509SecurityToken(cert)
             };
 
@@ -108,7 +116,7 @@ namespace IdentityServer3.Example.Client.FormPost.Controllers
         public ActionResult SignOut()
         {
             this.Request.GetOwinContext().Authentication.SignOut();
-            return this.Redirect(LogoutUri);
+            return this.Redirect(LogoutUri(this.Request));
         }
     }
 }
