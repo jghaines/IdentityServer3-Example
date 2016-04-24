@@ -113,7 +113,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="Properties\PublishProfiles\dev-oauth1.pubxml" />
-    <None Include="Properties\PublishProfiles\LocalPublish.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
