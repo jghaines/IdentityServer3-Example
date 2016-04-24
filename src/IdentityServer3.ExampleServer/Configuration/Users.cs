@@ -14,7 +14,7 @@ namespace IdentityServer3.ExampleServer.Configuration
                 new InMemoryUser
                 {
                     Username = "aman",
-                    Password = "Password123",
+                    Password = "pass",
                     Subject = "1",
                     Claims = new List<Claim>
                     {
@@ -23,7 +23,20 @@ namespace IdentityServer3.ExampleServer.Configuration
                         new Claim(Constants.ClaimTypes.Email, "a@thakral.in"),
                         new Claim(Constants.ClaimTypes.Role, "developer")
                     }
-                }
+                }, new InMemoryUser
+                {
+                    Username = "test",
+                    Password = "pass",
+                    Subject = "2",
+                    Claims = new List<Claim>
+                    {
+                        new Claim(Constants.ClaimTypes.GivenName, "Test"),
+                        new Claim(Constants.ClaimTypes.FamilyName, "User"),
+                        new Claim(Constants.ClaimTypes.Email, "test@test.com"),
+                        new Claim(Constants.ClaimTypes.Role, "developer")
+                    }
+                },
+                
             };
         }
     }

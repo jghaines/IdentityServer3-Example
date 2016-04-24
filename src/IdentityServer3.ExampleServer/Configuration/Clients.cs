@@ -18,8 +18,17 @@ namespace IdentityServer3.ExampleServer.Configuration
                     Flow = Flows.Implicit,
                     RequireConsent = true,
                     AllowRememberConsent = true,
-                    RedirectUris = new List<string> {"https://localhost:44304/account/signInCallback"},
-                    PostLogoutRedirectUris = new List<string> {"https://localhost:44304/"},
+                    RedirectUris = new List<string>
+                    {
+                        "https://localhost:44304/account/signInCallback",
+                        "https://dev-oauth-client.azurewebsites.net/account/signInCallback",
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        "https://localhost:44304/",
+                        "https://dev-oauth-client.azurewebsites.net/",
+
+                    },
                     AllowedScopes = 
                         new List<string>
                         {

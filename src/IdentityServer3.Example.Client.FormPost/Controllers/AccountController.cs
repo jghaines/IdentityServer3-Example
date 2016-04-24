@@ -13,13 +13,14 @@ namespace IdentityServer3.Example.Client.FormPost.Controllers
     {
         private static readonly Func<HttpRequestBase, string> CallbackEndpoint = req => ClientUri(req) + @"/account/signInCallback";
 
-        private static readonly Func<HttpRequestBase,string> ClientUri = req => req.UserHostName.Contains("azurewebsites.net") 
-            ? @"https://dev-oauth-client.azurewebsites.net/" 
-            : @"https://localhost:44304";
+        private static readonly Func<HttpRequestBase, string> ClientUri = req => req.UserHostName.Contains("localhost")
+            ? @"https://localhost:44304"
+            : @"https://dev-oauth-client.azurewebsites.net";
 
-        private static readonly Func<HttpRequestBase, string> IdServBaseUri = req => req.UserHostName.Contains("azurewebsites.net")
-            ? @"https://dev-oauth1.azurewebsites.net/oauth/ls"
-            : @"https://localhost:44300/oauth/ls";
+        private static readonly Func<HttpRequestBase, string> IdServBaseUri =
+            req => req.UserHostName.Contains("localhost")
+                ? @"https://localhost:44300/oauth/ls"
+                : @"https://dev-oauth1.azurewebsites.net/oauth/ls";
 
         private static readonly Func<HttpRequestBase, string> AuthorizeUri = req => IdServBaseUri(req) + @"/connect/authorize";
 
