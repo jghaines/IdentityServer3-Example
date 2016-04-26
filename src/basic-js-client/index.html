@@ -1,7 +1,10 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.4.min.js"></script>
+    <script src="amazon-cognito.min.js"></script>
     <script src="ENV.js"></script>
+
     <title></title>
     <style>
         button {
@@ -71,6 +74,8 @@
 
             show(result);
 
+            requestAwsCredentialsForOAuthToken( result.access_token );
+
             if (!result.error) {
                 if (result.state !== localStorage["state"]) {
                     show("invalid state");
@@ -81,6 +86,63 @@
                 }
             }
         }
+
+        /**
+         * Use AWS Cognito to exchange the given Token for (temporary) AWS credentials
+         */
+        function requestAwsCredentialsForOAuthToken( OAuthAccessToken ) {
+            console.log( "awsCredentialInit()" );
+
+            AWS.config.region = 'ap-northeast-1';
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: ENV.IdentityPoolId,
+                Logins: {
+                    [ ENV.IdentityPoolId ] : OAuthAccessToken
+                }
+            });
+
+            // Obtain AWS credentials
+            AWS.config.credentials.get( receiveAwsCredentials );
+        }
+
+        /**
+         * Callback once we've received credentials
+         */
+        function receiveAwsCredentials( err, data ) {
+            if ( err ) {
+                show( err )
+            } else {
+                show({
+                    identityId      : AWS.config.credentials.identityId,
+                    accessKeyId     : AWS.config.credentials.accessKeyId,
+                    secretAccessKey : AWS.config.credentials.secretAccessKey,
+                    sessionToken    : AWS.config.credentials.sessionToken,
+                });
+                
+                doCognitioData();
+            }
+        }
+
+        /**
+         * Writes some data using Cognito Sync
+         * Cognito Sync is permissined by default on all accounts
+         * You can see the results of this write in the AWS Console.
+         */
+        function doCognitioData(){
+            console.log( "doCognitioData()" );
+
+            var syncClient = new AWS.CognitoSyncManager();
+            syncClient.openOrCreateDataset('myDataset', function(err, dataset) {
+                dataset.put('myKey', 'myValue', function(err, record){
+                    dataset.synchronize({
+                        onSuccess: function(data, newRecords) {
+                            console.log( "Sync success")
+                        }
+                    });
+                });
+            });
+        }
+
 
         function useToken() {
             clear();
