@@ -13,7 +13,9 @@ namespace IdentityServer3.ExampleServer.Configuration
                 StandardScopes.Roles,
                 StandardScopes.Profile,
                 StandardScopes.Email,
-                StandardScopes.OfflineAccess
+                StandardScopes.OfflineAccess,
+                new Scope() {Name = "write"},
+                new Scope() {Name = "read"},
             };
         }
     }

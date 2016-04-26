@@ -21,11 +21,15 @@ namespace IdentityServer3.ExampleServer.Configuration
                     RedirectUris = new List<string>
                     {
                         "https://localhost:44304/account/signInCallback",
+                        "http://localhost:44305/",
+                        "http://localhost:44305/index.html",
                         "https://dev-oauth-client.azurewebsites.net/account/signInCallback",
                     },
                     PostLogoutRedirectUris = new List<string>
                     {
                         "https://localhost:44304/",
+                        "http://localhost:44305/",
+                        "http://localhost:44305/index.html",
                         "https://dev-oauth-client.azurewebsites.net/",
 
                     },
@@ -34,7 +38,10 @@ namespace IdentityServer3.ExampleServer.Configuration
                         {
                             Constants.StandardScopes.OpenId,
                             Constants.StandardScopes.Profile,
-                            Constants.StandardScopes.Email
+                            Constants.StandardScopes.Email,
+                            "read",
+                            "write"
+
                         },
                     AccessTokenType = AccessTokenType.Jwt
                 },
