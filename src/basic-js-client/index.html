@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <script src="ENV.js"></script>
     <title></title>
     <style>
         button {
@@ -41,9 +42,9 @@
         }
 
         function getToken() {
-            var authorizationUrl = 'https://localhost:44300/oauth/ls/connect/authorize';
+            var authorizationUrl = ENV.authorizationUrl;
             var client_id = 'implicitclient';
-            var redirect_uri = 'http://localhost:44305/index.html';
+            var redirect_uri = ENV.redirectUrl;
             var response_type = "token";
             var scope = "write";
             var state = Date.now() + "" + Math.random();
