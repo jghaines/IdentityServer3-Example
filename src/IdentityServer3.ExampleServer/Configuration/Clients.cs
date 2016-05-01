@@ -33,17 +33,27 @@ namespace IdentityServer3.ExampleServer.Configuration
                         "https://dev-oauth-client.azurewebsites.net/",
 
                     },
-                    AllowedScopes = 
+                    AllowedScopes =
                         new List<string>
                         {
                             Constants.StandardScopes.OpenId,
                             Constants.StandardScopes.Profile,
                             Constants.StandardScopes.Email,
                             "read",
-                            "write"
+                            "write",
+                            "email"
 
                         },
-                    AccessTokenType = AccessTokenType.Jwt
+                    AccessTokenType = AccessTokenType.Jwt,
+                    AllowedCorsOrigins =
+                    {
+                        "https://localhost:44304",
+                        "https://localhost:44305",
+                        "http://localhost:44305",
+                        "https://dev-oauth-client.azurewebsites.net",
+                        "http://dev-oauth-client.azurewebsites.net",
+                    }
+
                 },
                 new Client
                 {
