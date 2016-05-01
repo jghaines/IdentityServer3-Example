@@ -24,6 +24,8 @@ namespace IdentityServer3.ExampleServer.Configuration
                         "http://localhost:44305/",
                         "http://localhost:44305/index.html",
                         "https://dev-oauth-client.azurewebsites.net/account/signInCallback",
+                        "https://basicoauthclient.azurewebsites.net/",
+                        "https://angular-oauthclient.azurewebsites.net/",
                     },
                     PostLogoutRedirectUris = new List<string>
                     {
@@ -31,6 +33,8 @@ namespace IdentityServer3.ExampleServer.Configuration
                         "http://localhost:44305/",
                         "http://localhost:44305/index.html",
                         "https://dev-oauth-client.azurewebsites.net/",
+                        "https://basicoauthclient.azurewebsites.net/",
+                        "https://angular-oauthclient.azurewebsites.net/",
 
                     },
                     AllowedScopes =
@@ -52,6 +56,8 @@ namespace IdentityServer3.ExampleServer.Configuration
                         "http://localhost:44305",
                         "https://dev-oauth-client.azurewebsites.net",
                         "http://dev-oauth-client.azurewebsites.net",
+                        "https://basicoauthclient.azurewebsites.net",
+                        "https://angular-oauthclient.azurewebsites.net",
                     }
 
                 },
