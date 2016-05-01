@@ -25,6 +25,7 @@ namespace IdentityServer3.ExampleServer.Configuration
                         "http://localhost:44305/index.html",
                         "https://dev-oauth-client.azurewebsites.net/account/signInCallback",
                         "https://basicoauthclient.azurewebsites.net/",
+                        "https://basicoauthclient.azurewebsites.net/index.html",
                         "https://angular-oauthclient.azurewebsites.net/",
                     },
                     PostLogoutRedirectUris = new List<string>
