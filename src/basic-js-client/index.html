@@ -37,7 +37,7 @@
     <pre class="results"></pre>
 
     <script>
-        var authServerUrl = 'https://localhost:44300/oauth/ls';
+        var authServerUrl = window.location.host.contains('azurewebsites.net') ? 'https://dev-oauth1.azurewebsites.net/oauth/ls' : 'https://localhost:44300/oauth/ls';
         var access_token, id_token;
 
         if (window.location.hash) {
