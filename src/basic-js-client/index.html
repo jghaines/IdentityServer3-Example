@@ -1,17 +1,17 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.4.min.js"></script>
-    <script src="amazon-cognito.min.js"></script>
-    <script src="ENV.js"></script>
-
     <title></title>
     <style>
         button {
             display: none;
         }
 
-        .no-token .get, .token .validate, .token .api, .token .logout {
+        .no-token .get,
+        .token .validate,
+        .token .aws-cred,
+        .token .api,
+        .token .logout {
             display: inline;
         }
 
@@ -32,17 +32,24 @@
     <script src="libs/jws-3.0.js"></script>
     <script src="libs/es6-promise-2.0.0.js"></script>
 
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.4.min.js"></script>
+    <script src="libs/amazon-cognito.min.js"></script>
+
+    <script src="ENV.js"></script>
+
+
     <h1>id_token</h1>
     <a href="index.html">Refresh Page</a>
     <button class="get">Get Token</button>
     <button class="validate">Validate Token</button>
+    <button class="aws-cred">Get AWS Credentials</button>
     <button class="api">Call API</button>
     <button class="logout">Logout</button>
     <pre class="results"></pre>
 
     <script>
         var authServerUrl = window.location.host.indexOf('azurewebsites.net') ? 'https://dev-oauth1.azurewebsites.net/oauth/ls' : 'https://localhost:44300/oauth/ls';
-        var access_token, id_token;
+        var result, access_token, id_token;
 
         if (window.location.hash) {
             showTokenResponse();
@@ -50,6 +57,7 @@
 
         document.querySelector(".get").addEventListener("click", getToken, false);
         document.querySelector(".validate").addEventListener("click", validateToken, false);
+        document.querySelector(".aws-cred").addEventListener("click", requestAwsCredentialsForOAuthToken, false);
         document.querySelector(".api").addEventListener("click", callApi, false);
         document.querySelector(".logout").addEventListener("click", logout, false);
 
@@ -74,7 +82,7 @@
 
         function showTokenResponse() {
             var hash = window.location.hash.substr(1);
-            var result = hash.split('&').reduce(function (result, item) {
+            result = hash.split('&').reduce(function (result, item) {
                 var parts = item.split('=');
                 result[parts[0]] = parts[1];
                 return result;
@@ -217,6 +225,28 @@
             }, showError);
         }
 
+       /**
+         * Use AWS Cognito to exchange the given Token for (temporary) AWS credentials
+         */
+        function requestAwsCredentialsForOAuthToken() {
+            console.log( "awsCredentialInit()" );
+            
+            AWS.config.region = ENV.cognito.region;
+            var cogParams = {
+                IdentityPoolId: ENV.cognito.IdentityPoolId,
+                Logins: {
+                    [ ENV.cognito.provider ] : result.id_token
+                }
+            };
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials( cogParams );
+            
+            show( "AWS.CognitoIdentityCredentials request" );
+            show( cogParams );
+
+            // Obtain AWS credentials
+            AWS.config.credentials.get( receiveAwsCredentials );
+        }
+
         /**
          * Callback once we've received AWS credentials
          */
@@ -225,6 +255,7 @@
             if ( err ) {
                 show( err )
             } else {
+                show( "AWS.CognitoIdentityCredentials received" );
                 show({
                     identityId      : AWS.config.credentials.identityId,
                     accessKeyId     : AWS.config.credentials.accessKeyId,
@@ -232,8 +263,8 @@
                     sessionToken    : AWS.config.credentials.sessionToken,
                 });
                 
-                try { doCognitioData(); } catch ( e ) { show(e); }
-                try { doDynamoData(); } catch ( e ) { show(e); }
+//                try { doCognitioData(); } catch ( e ) { show(e); }
+//                try { doDynamoData(); } catch ( e ) { show(e); }
             }
         }
 
