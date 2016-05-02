@@ -24,6 +24,9 @@ namespace IdentityServer3.ExampleServer.Configuration
                         "http://localhost:44305/",
                         "http://localhost:44305/index.html",
                         "https://dev-oauth-client.azurewebsites.net/account/signInCallback",
+                        "https://basicoauthclient.azurewebsites.net/",
+                        "https://basicoauthclient.azurewebsites.net/index.html",
+                        "https://angular-oauthclient.azurewebsites.net/",
                     },
                     PostLogoutRedirectUris = new List<string>
                     {
@@ -31,19 +34,33 @@ namespace IdentityServer3.ExampleServer.Configuration
                         "http://localhost:44305/",
                         "http://localhost:44305/index.html",
                         "https://dev-oauth-client.azurewebsites.net/",
+                        "https://basicoauthclient.azurewebsites.net/",
+                        "https://angular-oauthclient.azurewebsites.net/",
 
                     },
-                    AllowedScopes = 
+                    AllowedScopes =
                         new List<string>
                         {
                             Constants.StandardScopes.OpenId,
                             Constants.StandardScopes.Profile,
                             Constants.StandardScopes.Email,
                             "read",
-                            "write"
+                            "write",
+                            "email"
 
                         },
-                    AccessTokenType = AccessTokenType.Jwt
+                    AccessTokenType = AccessTokenType.Jwt,
+                    AllowedCorsOrigins =
+                    {
+                        "https://localhost:44304",
+                        "https://localhost:44305",
+                        "http://localhost:44305",
+                        "https://dev-oauth-client.azurewebsites.net",
+                        "http://dev-oauth-client.azurewebsites.net",
+                        "https://basicoauthclient.azurewebsites.net",
+                        "https://angular-oauthclient.azurewebsites.net",
+                    }
+
                 },
                 new Client
                 {

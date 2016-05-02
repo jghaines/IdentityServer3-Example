@@ -16,6 +16,7 @@ namespace IdentityServer3.ExampleServer.Configuration
                 StandardScopes.OfflineAccess,
                 new Scope() {Name = "write"},
                 new Scope() {Name = "read"},
+                new Scope() {Name = "email"},
             };
         }
     }
