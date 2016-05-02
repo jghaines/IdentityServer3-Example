@@ -106,9 +106,10 @@
         }
 
         /**
-         * Callback once we've received credentials
+         * Callback once we've received AWS credentials
          */
-        function receiveAwsCredentials( err, data ) {
+        function receiveAwsCredentials( err ) {
+            console.log( "receiveAwsCredentials()" );
             if ( err ) {
                 show( err )
             } else {
@@ -119,7 +120,8 @@
                     sessionToken    : AWS.config.credentials.sessionToken,
                 });
                 
-                doCognitioData();
+                try { doCognitioData(); } catch ( e ) { show(e); }
+                try { doDynamoData(); } catch ( e ) { show(e); }
             }
         }
 
@@ -140,6 +142,26 @@
                         }
                     });
                 });
+            });
+        }
+
+        /**
+         * Does a scan on the configured Table
+         */
+        function doDynamoData() {
+            console.log( "doDynamoData()" );
+
+            var ddb = new AWS.DynamoDB( { ENV.dynamo.region } );
+                        
+            ddb.scan({ TableName: ENV.dynamo.tableName }, function (err, data) {
+                if (err){
+                    show(err);   
+                } else {
+                    var items = '';
+                    for (i = 0; i < data.Count; i++) {
+                        show( data.Items[i] );
+                    }    
+                }
             });
         }
 
