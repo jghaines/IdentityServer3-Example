@@ -10,6 +10,7 @@
         .no-token .get,
         .token .validate,
         .token .aws-cred,
+        .token .dynamo,
         .token .api,
         .token .logout {
             display: inline;
@@ -43,6 +44,7 @@
     <button class="get">Get Token</button>
     <button class="validate">Validate Token</button>
     <button class="aws-cred">Get AWS Credentials</button>
+    <button class="dynamo">Get Dynamo Data</button>
     <button class="api">Call API</button>
     <button class="logout">Logout</button>
     <pre class="results"></pre>
@@ -58,6 +60,7 @@
         document.querySelector(".get").addEventListener("click", getToken, false);
         document.querySelector(".validate").addEventListener("click", validateToken, false);
         document.querySelector(".aws-cred").addEventListener("click", requestAwsCredentialsForOAuthToken, false);
+        document.querySelector(".dynamo").addEventListener("click", doDynamoData, false);
         document.querySelector(".api").addEventListener("click", callApi, false);
         document.querySelector(".logout").addEventListener("click", logout, false);
 
@@ -264,7 +267,6 @@
                 });
                 
 //                try { doCognitioData(); } catch ( e ) { show(e); }
-//                try { doDynamoData(); } catch ( e ) { show(e); }
             }
         }
 
