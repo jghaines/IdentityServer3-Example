@@ -181,3 +181,6 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+# production configuration - don't store in git 
+src/base-js-client/ENV.js
