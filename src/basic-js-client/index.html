@@ -11,6 +11,7 @@
         .token .validate,
         .token .aws-cred,
         .token .dynamo,
+        .token .aws-api,
         .token .api,
         .token .logout {
             display: inline;
@@ -27,14 +28,29 @@
     </style>
 </head>
 <body class="no-token">
+    <!-- for AWS API Gateway with IAM Authentication -->
+    <script type="text/javascript" src="libs/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="libs/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="libs/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="libs/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="libs/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="libs/url-template/url-template.js"></script>
+    <script type="text/javascript" src="libs/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="libs/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="libs/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="libs/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="./apigClient.js"></script>
+
     <script src="libs/crypto.js"></script>
     <script src="libs/rsa.js"></script>
     <script src="libs/json-sans-eval.js"></script>
     <script src="libs/jws-3.0.js"></script>
     <script src="libs/es6-promise-2.0.0.js"></script>
 
+    <!-- for AWS Cognito -->
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.3.4.min.js"></script>
     <script src="libs/amazon-cognito.min.js"></script>
+
 
     <script src="ENV.js"></script>
 
@@ -45,6 +61,7 @@
     <button class="validate">Validate Token</button>
     <button class="aws-cred">Get AWS Credentials</button>
     <button class="dynamo">Get Dynamo Data</button>
+    <button class="aws-api">Call AWS API GW</button>
     <button class="api">Call API</button>
     <button class="logout">Logout</button>
     <pre class="results"></pre>
@@ -60,7 +77,8 @@
         document.querySelector(".get").addEventListener("click", getToken, false);
         document.querySelector(".validate").addEventListener("click", validateToken, false);
         document.querySelector(".aws-cred").addEventListener("click", requestAwsCredentialsForOAuthToken, false);
-        document.querySelector(".dynamo").addEventListener("click", doDynamoData, false);
+        document.querySelector(".dynamo").addEventListener("click", getDynamoData, false);
+        document.querySelector(".aws-api").addEventListener("click", callAwsApi, false);
         document.querySelector(".api").addEventListener("click", callApi, false);
         document.querySelector(".logout").addEventListener("click", logout, false);
 
@@ -243,7 +261,7 @@
             };
             AWS.config.credentials = new AWS.CognitoIdentityCredentials( cogParams );
             
-            show( "AWS.CognitoIdentityCredentials request" );
+            show( "AWS.CognitoIdentityCredentials request..." );
             show( cogParams );
 
             // Obtain AWS credentials
@@ -285,9 +303,7 @@
         /**
          * Does a scan on the configured Table
          */
-        function doDynamoData() {
-            console.log( "doDynamoData()" );
-
+        function getDynamoData() {
             var ddb = new AWS.DynamoDB( { region: ENV.dynamo.region } );
                         
             ddb.scan({ TableName: ENV.dynamo.tableName }, function (err, data) {
@@ -301,6 +317,29 @@
                 }
             });
         }
+
+        function callAwsApi() {
+            var apigClient = apigClientFactory.newClient({
+                accessKey       : AWS.config.credentials.accessKeyId,
+                secretKey       : AWS.config.credentials.secretAccessKey,
+                sessionToken    : AWS.config.credentials.sessionToken,
+                region          : ENV.apigw.region
+            });
+
+            var body = {
+                "client" : "cognito-web-client"
+            };
+
+            apigClient.iamGet({}, '', {})
+                .then(function(result){
+                    show( "API GW result");
+                    show(JSON.stringify( result, null, 2 ));
+                }).catch( function(err){
+                    show( "API GW error");
+                    show(JSON.stringify( err, null, 2 ));
+                });
+        }
+
 
         function getJson(url, token) {
             return new Promise(function (resolve, reject) {
